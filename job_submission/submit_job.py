@@ -14,6 +14,9 @@ import uuid
 import sys
 from pathlib import Path
 import re
+import json
+import getpass
+from datetime import datetime, timezone
 
 def _load_dotenv(path: Path = Path(__file__).parent.parent / ".env") -> None:
     """
@@ -35,6 +38,20 @@ def _load_dotenv(path: Path = Path(__file__).parent.parent / ".env") -> None:
 _load_dotenv()
 
 from .writer import get_writer
+
+def _make_metadata() -> dict:
+    """Return a dict with auto-generated submission metadata."""
+    return {
+        "submitted_at": datetime.now(timezone.utc).isoformat(),
+        "submitted_by": getpass.getuser(),
+    }
+
+def _write_metadata(job_dir: Path) -> None:
+    """Write metadata.json inside *job_dir*."""
+    (job_dir / "metadata.json").write_text(
+        json.dumps(_make_metadata(), indent=2),
+        encoding="utf-8"
+    )
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Submit a kernel+data job.")
@@ -61,17 +78,15 @@ def _prepare_job_dir(kernel: Path, data: Path) -> Path:
     """Copy inputs into an isolated temp dir so the writer sees one root."""
     tmp_dir = Path(tempfile.mkdtemp(prefix="job_"))
 
-    # ---- kernel -----------------------------------------------------------
     if kernel.is_dir():
         shutil.copytree(kernel, tmp_dir / "kernel")
     else:
-        shutil.copy2(kernel, tmp_dir / f"kernel{kernel.suffix}")   # keep .txt …
+        shutil.copy2(kernel, tmp_dir / f"kernel{kernel.suffix}")   
 
-    # ---- data -------------------------------------------------------------
     if data.is_dir():
         shutil.copytree(data, tmp_dir / "data")
     else:
-        shutil.copy2(data, tmp_dir / f"data{data.suffix}")         # … or .json
+        shutil.copy2(data, tmp_dir / f"data{data.suffix}")         
 
     return tmp_dir
 
@@ -84,6 +99,8 @@ def main() -> None:
 
     # Bundle the job into a temp folder:
     job_dir = _prepare_job_dir(Path(args.kernel), Path(args.data))
+
+    _write_metadata(job_dir)
 
     if args.backend == "s3":
         writer = get_writer(
