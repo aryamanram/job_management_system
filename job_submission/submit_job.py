@@ -47,8 +47,8 @@ def _make_metadata() -> dict:
     }
 
 def _write_metadata(job_dir: Path) -> None:
-    """Write metadata.json inside *job_dir*."""
-    (job_dir / "metadata.json").write_text(
+    """Write user-metadata.json inside *job_dir*."""
+    (job_dir / "user-metadata.json").write_text(
         json.dumps(_make_metadata(), indent=2),
         encoding="utf-8"
     )
