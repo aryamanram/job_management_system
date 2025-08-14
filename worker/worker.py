@@ -17,11 +17,9 @@ def _is_claimable(store: JobStore, job_id: str) -> bool:
         return True
     text = store.get_text(key)
     md = parse_worker_metadata(text or "")
-    # If metadata exists and status is any terminal/active state, we skip it.
-    # (We only implement 'in-progress' today; failed/completed are future.)
     if md and md.status in ("in-progress", "failed", "completed"):
         return False
-    return False  # be conservative
+    return False
 
 def claim_and_pull_one(store: JobStore, work_root: Path, worker_id: str) -> Optional[str]:
     """

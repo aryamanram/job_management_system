@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from __future__ import annotations
 import argparse
 import getpass
@@ -67,7 +66,7 @@ def main() -> None:
     def loop_once() -> bool:
         job_id = claim_and_pull_one(store, work_root, worker_id)
         if job_id:
-            print(f"[worker] claimed and pulled job: {job_id} → {work_root / job_id}")
+            print(f"[worker] claimed and pulled job: {job_id} -> {work_root / job_id}")
             return True
         print("[worker] no claimable jobs found")
         return False

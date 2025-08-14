@@ -6,8 +6,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
 
-# --- Common interface --------------------------------------------------------
-
 class JobStore(ABC):
     """Abstract access to a collection of job folders keyed by job_id/."""
 
@@ -30,8 +28,6 @@ class JobStore(ABC):
     @abstractmethod
     def download_prefix(self, prefix: str, dest_dir: Path) -> None:
         """Download all objects under *prefix*/ into *dest_dir*."""
-
-# --- S3 implementation -------------------------------------------------------
 
 @dataclass
 class S3JobStore(JobStore):
@@ -102,8 +98,6 @@ class S3JobStore(JobStore):
             local_path = dest_dir / rel
             local_path.parent.mkdir(parents=True, exist_ok=True)
             self._bucket.download_file(obj.key, str(local_path))
-
-# --- Local implementation (handy for testing) --------------------------------
 
 @dataclass
 class LocalJobStore(JobStore):
