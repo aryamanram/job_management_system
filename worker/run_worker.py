@@ -46,6 +46,7 @@ def main() -> None:
     _load_dotenv()
     args = _build_parser().parse_args()
 
+    # Currently getting worker id from local users
     worker_id = args.worker_id or f"{socket.gethostname()}:{getpass.getuser()}"
 
     if args.backend == "s3":
