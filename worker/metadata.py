@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal, Optional
 
-# was: Literal["in-progress", "failed", "completed"]
 Status = Literal["in-progress", "successful", "failure"]
 
 @dataclass

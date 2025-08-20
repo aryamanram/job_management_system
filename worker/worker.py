@@ -21,7 +21,7 @@ def _is_claimable(store: JobStore, job_id: str) -> bool:
     text = store.get_text(key) or ""
     md = parse_worker_metadata(text)
     if not md:
-        return True  # malformed → re-claimable
+        return True
     if md.status in ("in-progress", "successful", "failure"):
         return False
     return True

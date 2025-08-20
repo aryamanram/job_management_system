@@ -4,7 +4,6 @@ from pathlib import Path
 
 
 class Writer(ABC):
-    """Common interface for any storage backend."""
 
     @abstractmethod
     def write(self, local_path: str | Path, key_prefix: str | None = None) -> str:

@@ -1,4 +1,8 @@
 from __future__ import annotations
+from . import get_store
+from .worker import claim_and_pull_one
+from .run_job import run_job_once
+
 import argparse
 import getpass
 import os
@@ -7,10 +11,6 @@ import socket
 import sys
 import time
 from pathlib import Path
-
-from . import get_store
-from .worker import claim_and_pull_one
-from .run_job import run_job_once  # ← NEW import
 
 def _load_dotenv(path: Path = Path(__file__).parent.parent / ".env") -> None:
     if not path.exists():
@@ -68,7 +68,6 @@ def main() -> None:
         job_id = claim_and_pull_one(store, work_root, worker_id)
         if job_id:
             print(f"[worker] claimed and pulled job: {job_id} -> {work_root / job_id}")
-            # NEW: run the job (simulate), upload results, finalize metadata
             run_job_once(store, work_root, job_id, worker_id)
             print(f"[worker] finished job: {job_id} (results.json + worker-metadata.json updated)")
             return True

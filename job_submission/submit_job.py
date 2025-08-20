@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-"""
-CLI entry-point: bundle kernel+data, then hand off to the selected Writer.
-
-Run `python -m job_submission.submit_job --help` for usage.
-"""
 from __future__ import annotations
+from datetime import datetime, timezone
+from pathlib import Path
 
 import argparse
 import shutil
@@ -12,16 +8,13 @@ import os
 import tempfile
 import uuid
 import sys
-from pathlib import Path
 import re
 import json
 import getpass
-from datetime import datetime, timezone
 
 def _load_dotenv(path: Path = Path(__file__).parent.parent / ".env") -> None:
     """
-    Populate os.environ from a .env file containing lines like
-        export VAR=value
+    Populate os.environ from a .env file.
     An existing real environment variable always wins.
     """
     if not path.exists():

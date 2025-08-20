@@ -6,7 +6,6 @@ from .base import Writer
 
 
 class LocalWriter(Writer):
-    """Fallback backend that copies into a local <root_dir>/<job-id>/."""
 
     def __init__(self, root_dir: str = "jobs"):
         self.root_dir = Path(root_dir).expanduser().resolve()

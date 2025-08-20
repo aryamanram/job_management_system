@@ -1,12 +1,12 @@
 from __future__ import annotations
+from pathlib import Path
+from typing import Dict, Any
+from .metadata import WorkerMetadata
+from .stores import JobStore
+
 import json
 import random
 import time
-from pathlib import Path
-from typing import Dict, Any
-
-from .metadata import WorkerMetadata
-from .stores import JobStore
 
 WORKER_META_NAME = "worker-metadata.json"
 RESULTS_NAME = "results.json"

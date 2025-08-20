@@ -1,23 +1,23 @@
 job-submission-api
     \job_submission
         \writer
-            \__init__.py
+            __init__.py
             base.py
             local.py
             s3.py
         __init__.py
         submit_job.py
     \work
-        \work
-            \a9586eea8c684bd8802ec290639a0632
-                data.json
-                kernel.txt
-                results.json
-                user-metadata.json
-                worker-metadata.json
+        \a9586eea8c684bd8802ec290639a0632
+            data.json
+            kernel.txt
+            results.json
+            user-metadata.json
+            worker-metadata.json
     \worker
         __init.py
         metadata.py
+        run_job.py
         run_worker.py
         stores.py
         worker.py

@@ -1,10 +1,11 @@
 from __future__ import annotations
-import os
-import shutil
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Optional
+
+import os
+import shutil
 
 class JobStore(ABC):
     """Abstract access to a collection of job folders keyed by job_id/."""
