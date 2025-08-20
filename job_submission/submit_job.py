@@ -32,24 +32,25 @@ _load_dotenv()
 
 from .writer import get_writer
 
-def _make_metadata() -> dict:
+def _make_metadata(user: str) -> dict:
     """Return a dict with auto-generated submission metadata."""
     return {
         "submitted_at": datetime.now(timezone.utc).isoformat(),
-        "submitted_by": getpass.getuser(),
+        "submitted_by": user,
     }
 
-def _write_metadata(job_dir: Path) -> None:
+def _write_metadata(job_dir: Path, user: str) -> None:
     """Write user-metadata.json inside *job_dir*."""
     (job_dir / "user-metadata.json").write_text(
-        json.dumps(_make_metadata(), indent=2),
-        encoding="utf-8"
+        json.dumps(_make_metadata(user), indent=2),
+        encoding="utf-8",
     )
 
 def _build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Submit a kernel+data job.")
     p.add_argument("--kernel", required=True, help="Path to kernel file or folder.")
     p.add_argument("--data", required=True, help="Path to data file or folder.")
+    p.add_argument("--user", required=True, help="Username or user ID for this job.")
     p.add_argument(
     "--backend",
     choices=("local", "s3"),
@@ -93,7 +94,7 @@ def main() -> None:
     # Bundle the job into a temp folder:
     job_dir = _prepare_job_dir(Path(args.kernel), Path(args.data))
 
-    _write_metadata(job_dir)
+    _write_metadata(job_dir, args.user)
 
     if args.backend == "s3":
         writer = get_writer(
