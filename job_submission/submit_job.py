@@ -109,6 +109,5 @@ def main() -> None:
     location = writer.write(job_dir)
     print(f"Job uploaded to:  {location}")
 
-
 if __name__ == "__main__":
     main()

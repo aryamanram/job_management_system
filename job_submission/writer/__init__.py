@@ -1,13 +1,12 @@
-import os
 from typing import Literal
-
 from .local import LocalWriter
+
+import os
 
 try:
     from .s3 import S3Writer  # noqa: F401  (may fail if boto3 is not installed)
 except ModuleNotFoundError:
     S3Writer = None  # type: ignore
-
 
 def get_writer(backend: Literal["local", "s3"] = "local", **kwargs):  
     """Factory that produces the right Writer subclass."""

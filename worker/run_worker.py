@@ -53,7 +53,6 @@ def main() -> None:
     except Exception:
         worker_id = "0"
     
-
     if args.backend == "s3":
         bucket = args.bucket or os.getenv("RUNPOD_S3_BUCKET")
         if not bucket:

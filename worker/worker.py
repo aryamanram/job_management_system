@@ -1,7 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import Optional
-
 from .metadata import WorkerMetadata, parse_worker_metadata, write_local_worker_metadata
 from .stores import JobStore
 

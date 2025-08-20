@@ -11,18 +11,14 @@ import time
 WORKER_META_NAME = "worker-metadata.json"
 RESULTS_NAME = "results.json"
 
-
 def _worker_meta_key(job_id: str) -> str:
     return f"{job_id}/{WORKER_META_NAME}"
-
 
 def _results_key(job_id: str) -> str:
     return f"{job_id}/{RESULTS_NAME}"
 
-
 def _write_local(path: Path, payload: Dict[str, Any]) -> None:
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
 
 def run_job_once(store: JobStore, work_root: Path, job_id: str, worker_id: str) -> None:
     """

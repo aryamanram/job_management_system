@@ -4,7 +4,6 @@ from pathlib import Path
 
 from .base import Writer
 
-
 class LocalWriter(Writer):
 
     def __init__(self, root_dir: str = "jobs"):

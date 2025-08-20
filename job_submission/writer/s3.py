@@ -6,7 +6,6 @@ from botocore.client import Config as _BotoConfig
 from boto3.s3.transfer import TransferConfig
 from .base import Writer
 
-
 class S3Writer(Writer):
     def __init__(
         self,

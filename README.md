@@ -7,3 +7,6 @@
 (3) python -m worker.run_worker --once 
 
 (3) python -m worker.run_worker
+
+
+python -m job_submission.get_job --uuid
