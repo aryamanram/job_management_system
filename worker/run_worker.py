@@ -47,7 +47,12 @@ def main() -> None:
     _load_dotenv()
     args = _build_parser().parse_args()
 
-    worker_id = args.worker_id or f"{socket.gethostname()}:{getpass.getuser()}"
+    # Single worker ID grabbed from local device
+    try:
+        worker_id = args.worker_id or f"{socket.gethostname()}:{getpass.getuser()}"
+    except Exception:
+        worker_id = "0"
+    
 
     if args.backend == "s3":
         bucket = args.bucket or os.getenv("RUNPOD_S3_BUCKET")
