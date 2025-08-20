@@ -5,7 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal, Optional
 
-Status = Literal["in-progress", "failed", "completed"]
+# was: Literal["in-progress", "failed", "completed"]
+Status = Literal["in-progress", "successful", "failure"]
 
 @dataclass
 class WorkerMetadata:
@@ -31,8 +32,12 @@ def parse_worker_metadata(text: str) -> Optional[WorkerMetadata]:
     try:
         obj = json.loads(text)
         st = obj.get("status")
-        if st in ("in-progress", "failed", "completed"):
-            return WorkerMetadata(status=st, claimed_at=obj.get("claimed_at",""), worker_id=obj.get("worker_id",""))
+        if st in ("in-progress", "successful", "failure"):
+            return WorkerMetadata(
+                status=st,
+                claimed_at=obj.get("claimed_at", ""),
+                worker_id=obj.get("worker_id", ""),
+            )
     except Exception:
         pass
     return None

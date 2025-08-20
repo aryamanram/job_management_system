@@ -11,19 +11,24 @@ def _worker_meta_key(job_id: str) -> str:
     return f"{job_id}/{WORKER_META_NAME}"
 
 def _is_claimable(store: JobStore, job_id: str) -> bool:
-    """True if no worker-metadata.json exists, or if it exists but is unusable."""
+    """
+    True if no worker-metadata.json exists, or if it exists but is unusable.
+    Not claimable if status is 'in-progress', 'successful', or 'failure'.
+    """
     key = _worker_meta_key(job_id)
     if not store.object_exists(key):
         return True
-    text = store.get_text(key)
-    md = parse_worker_metadata(text or "")
-    if md and md.status in ("in-progress", "failed", "completed"):
+    text = store.get_text(key) or ""
+    md = parse_worker_metadata(text)
+    if not md:
+        return True  # malformed → re-claimable
+    if md.status in ("in-progress", "successful", "failure"):
         return False
-    return False
+    return True
 
 def claim_and_pull_one(store: JobStore, work_root: Path, worker_id: str) -> Optional[str]:
     """
-    Find first claimable job, mark it in S3/local with worker-metadata ("in-progress"),
+    Find first claimable job, mark it with worker-metadata 'in-progress',
     then download the full job into work_root/<job_id>/.
     Returns job_id or None if nothing to claim.
     """
@@ -33,7 +38,7 @@ def claim_and_pull_one(store: JobStore, work_root: Path, worker_id: str) -> Opti
         if not _is_claimable(store, job_id):
             continue
 
-        # Claim by writing worker-metadata.json at the job root
+        # Claim
         md = WorkerMetadata.in_progress(worker_id)
         store.put_text(_worker_meta_key(job_id), md.to_json())
 

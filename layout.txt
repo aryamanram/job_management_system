@@ -9,9 +9,10 @@ job-submission-api
         submit_job.py
     \work
         \work
-            \0f7ef492e6ea4bec993f367eaeeeb2cc
+            \a9586eea8c684bd8802ec290639a0632
                 data.json
                 kernel.txt
+                results.json
                 user-metadata.json
                 worker-metadata.json
     \worker

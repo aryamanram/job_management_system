@@ -10,6 +10,7 @@ from pathlib import Path
 
 from . import get_store
 from .worker import claim_and_pull_one
+from .run_job import run_job_once  # ← NEW import
 
 def _load_dotenv(path: Path = Path(__file__).parent.parent / ".env") -> None:
     if not path.exists():
@@ -24,7 +25,7 @@ def _load_dotenv(path: Path = Path(__file__).parent.parent / ".env") -> None:
             os.environ.setdefault(k.strip(), v.strip())
 
 def _build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Worker: poll S3 (or local) for jobs, claim, and pull.")
+    p = argparse.ArgumentParser(description="Worker: poll S3 (or local) for jobs, claim, run, and pull.")
     p.add_argument("--backend", choices=("s3","local"), default=os.getenv("JOB_BACKEND","s3"))
 
     # S3 settings
@@ -37,7 +38,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     # Runtime
     p.add_argument("--workdir", default="work", help="Local directory to place pulled jobs.")
-    p.add_argument("--once", action="store_true", help="Claim/pull at most one job then exit.")
+    p.add_argument("--once", action="store_true", help="Claim, run at most one job then exit.")
     p.add_argument("--interval", type=int, default=5, help="Poll interval (seconds) when looping.")
     p.add_argument("--worker-id", help="Custom worker ID (defaults to host:user).")
     return p
@@ -46,7 +47,6 @@ def main() -> None:
     _load_dotenv()
     args = _build_parser().parse_args()
 
-    # Currently getting worker id from local users
     worker_id = args.worker_id or f"{socket.gethostname()}:{getpass.getuser()}"
 
     if args.backend == "s3":
@@ -68,6 +68,9 @@ def main() -> None:
         job_id = claim_and_pull_one(store, work_root, worker_id)
         if job_id:
             print(f"[worker] claimed and pulled job: {job_id} -> {work_root / job_id}")
+            # NEW: run the job (simulate), upload results, finalize metadata
+            run_job_once(store, work_root, job_id, worker_id)
+            print(f"[worker] finished job: {job_id} (results.json + worker-metadata.json updated)")
             return True
         print("[worker] no claimable jobs found")
         return False
